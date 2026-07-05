@@ -1,0 +1,234 @@
+:root {
+  --navy-950: #060f1c;
+  --navy-900: #0a1830;
+  --navy-800: #123156;
+  --navy-700: #1a4270;
+  --navy-600: #26557f;
+  --silver: #b9c7d6;
+  --silver-dim: #7f92a6;
+  --white: #f5f8fb;
+  --dawn-amber: #e8a355;
+  --dawn-light: #f6cf9a;
+  --dawn-glow: rgba(232, 163, 85, 0.28);
+  --builder: #5c8ab8;
+  --core: #8fc0e6;
+  --legend: #e8a355;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--white);
+  background: var(--navy-950);
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%, var(--dawn-glow), transparent 60%),
+    linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 45%, #182838 100%);
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+.shell {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 72px 24px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Signature hero: an arch of light, echoing Arc's own mark --- */
+.hero-arch-wrap {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  height: 340px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.eyebrow {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--dawn-light);
+  font-weight: 500;
+  font-family: var(--font-body);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: var(--dawn-amber);
+  display: inline-block;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 46px;
+  line-height: 1.08;
+  margin: 18px 0 14px;
+  letter-spacing: -0.01em;
+  max-width: 480px;
+}
+
+.title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--dawn-light);
+}
+
+.subtitle {
+  color: var(--silver);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 40px;
+  max-width: 440px;
+}
+
+.scan-panel {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  padding: 8px;
+  backdrop-filter: blur(20px);
+  display: flex;
+  gap: 8px;
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.scan-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 18px;
+  color: var(--white);
+  font-size: 16px;
+  font-family: var(--font-body);
+}
+
+.scan-input:focus {
+  outline: none;
+}
+
+.scan-input::placeholder {
+  color: var(--silver-dim);
+}
+
+.scan-button {
+  background: linear-gradient(160deg, var(--dawn-light), var(--dawn-amber));
+  color: #2b1a08;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 26px;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -8px rgba(232, 163, 85, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.scan-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -8px rgba(232, 163, 85, 0.75);
+}
+
+.scan-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.scan-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--silver-dim);
+  margin: 14px 0 0;
+}
+
+.error-box {
+  background: rgba(217, 90, 48, 0.14);
+  border: 1px solid rgba(217, 90, 48, 0.35);
+  color: #f0997b;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  margin-top: 28px;
+}
+
+.cooldown-note {
+  font-size: 13px;
+  color: var(--silver-dim);
+  margin: 24px 0 -8px;
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+.results-enter {
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ghost-button {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ghost-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.24);
+}
