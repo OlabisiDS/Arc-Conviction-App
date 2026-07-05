@@ -20,13 +20,16 @@ export default function Home() {
 
     setLoading(true);
     setError("");
-    setMintStatus("");
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
 
     try {
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle })
+        body: JSON.stringify({ handle }),
+        signal: controller.signal
       });
       const data = await res.json();
 
@@ -37,8 +40,13 @@ export default function Home() {
         setResult(data);
       }
     } catch (err) {
-      setError("Couldn't reach the scan service. Try again.");
+      if (err.name === "AbortError") {
+        setError("That took too long and timed out. Try again.");
+      } else {
+        setError("Couldn't reach the scan service. Try again.");
+      }
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
     }
   }
