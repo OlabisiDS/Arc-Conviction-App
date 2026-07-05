@@ -7,6 +7,7 @@ export default function MintFlow({ handle }) {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [address, setAddress] = useState("");
 
   async function handleMint() {
     setLoading(true);
@@ -28,7 +29,8 @@ export default function MintFlow({ handle }) {
       }
 
       setDone(true);
-      setStatus(`Minted to ${data.address.slice(0, 6)}...${data.address.slice(-4)}`);
+      setAddress(data.address);
+      setStatus("Minted");
     } catch (err) {
       setIsError(true);
       setStatus("Something went wrong. Try again.");
@@ -45,6 +47,19 @@ export default function MintFlow({ handle }) {
       {status && (
         <p className="cooldown-note" style={{ margin: "10px 0 0", color: isError ? "#f0997b" : undefined }}>
           {status}
+          {done && address && (
+            <>
+              {" "}
+              <a
+                href={`https://testnet.arcscan.app/address/${address}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "#e8a355", textDecoration: "underline" }}
+              >
+                view on Arcscan
+              </a>
+            </>
+          )}
         </p>
       )}
     </div>
