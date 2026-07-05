@@ -79,7 +79,6 @@ export default function Home() {
           {loading ? "scanning..." : "scan"}
         </button>
       </form>
-      <p className="hint">Running on mock data until a real API key is configured. See README.</p>
 
       <TierLadder activeTier={result?.conviction?.tier} />
 
