@@ -3,10 +3,69 @@
 import { forwardRef } from "react";
 
 const TIER_STYLES = {
-  "arc builder": { color: "#5c8ab8", label: "arc builder", glow: "rgba(92,138,184,0.35)" },
-  "arc core": { color: "#8fc0e6", label: "arc core", glow: "rgba(143,192,230,0.35)" },
-  "arc legend": { color: "#e8a355", label: "arc legend", glow: "rgba(232,163,85,0.45)" }
+  "arc builder": {
+    color: "#5c8ab8",
+    label: "arc builder",
+    glow: "rgba(92,138,184,0.35)",
+    rank: 1,
+    tagline: "finding their footing",
+    background: "radial-gradient(120% 90% at 50% 0%, #16324f 0%, #0d2038 45%, #060f1c 100%)"
+  },
+  "arc core": {
+    color: "#8fc0e6",
+    label: "arc core",
+    glow: "rgba(143,192,230,0.35)",
+    rank: 2,
+    tagline: "consistently building",
+    background: "radial-gradient(120% 90% at 50% 0%, #1c3f5e 0%, #0d2038 45%, #060f1c 100%)"
+  },
+  "arc legend": {
+    color: "#e8a355",
+    label: "arc legend",
+    glow: "rgba(232,163,85,0.5)",
+    rank: 3,
+    tagline: "maximum conviction",
+    background:
+      "radial-gradient(130% 100% at 50% -10%, #3d2c18 0%, #2a2438 30%, #14243a 60%, #060f1c 100%)"
+  }
 };
+
+function RankDots({ rank, color }) {
+  return (
+    <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: i <= rank ? color : "transparent",
+            border: `1px solid ${i <= rank ? color : "rgba(255,255,255,0.25)"}`
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Sparkles({ color }) {
+  const points = [
+    [30, 40], [330, 60], [24, 260], [336, 300], [50, 340], [310, 150]
+  ];
+  return (
+    <svg width="100%" height="100%" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+      {points.map(([x, y], i) => (
+        <path
+          key={i}
+          d={`M ${x} ${y - 4} L ${x + 1.5} ${y - 1.5} L ${x + 4} ${y} L ${x + 1.5} ${y + 1.5} L ${x} ${y + 4} L ${x - 1.5} ${y + 1.5} L ${x - 4} ${y} L ${x - 1.5} ${y - 1.5} Z`}
+          fill={color}
+          opacity={0.25 + (i % 3) * 0.12}
+        />
+      ))}
+    </svg>
+  );
+}
 
 function TierFrame({ tier, initials, profileImageUrl }) {
   const style = TIER_STYLES[tier] || TIER_STYLES["arc builder"];
@@ -69,8 +128,9 @@ function TierFrame({ tier, initials, profileImageUrl }) {
   );
 }
 
-const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction, postCount }, ref) {
+const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction }, ref) {
   const style = TIER_STYLES[conviction.tier] || TIER_STYLES["arc builder"];
+  const isLegend = conviction.tier === "arc legend";
   const initials = (profile.displayName || profile.handle || "??")
     .split(/\s+/)
     .map((w) => w[0])
@@ -89,9 +149,10 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction,
         padding: 24,
         color: "#f5f8fb",
         fontFamily: "'Space Grotesk', sans-serif",
-        background:
-          "radial-gradient(120% 90% at 50% 0%, #16324f 0%, #0d2038 45%, #060f1c 100%)",
-        boxShadow: `0 30px 70px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06)`
+        background: style.background,
+        boxShadow: isLegend
+          ? `0 30px 80px -20px rgba(232,163,85,0.3), 0 0 0 1px rgba(232,163,85,0.15)`
+          : `0 30px 70px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06)`
       }}
     >
       {/* Decorative arch watermark, echoes Arc's own mark, purely atmospheric */}
@@ -99,7 +160,14 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction,
         width="340"
         height="240"
         viewBox="0 0 340 240"
-        style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", opacity: 0.16, pointerEvents: "none" }}
+        style={{
+          position: "absolute",
+          top: -30,
+          left: "50%",
+          transform: "translateX(-50%)",
+          opacity: isLegend ? 0.26 : 0.16,
+          pointerEvents: "none"
+        }}
       >
         <path
           d="M 90 220 L 90 110 A 80 80 0 0 1 250 110 L 250 220"
@@ -109,6 +177,8 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction,
           strokeLinecap="round"
         />
       </svg>
+
+      {isLegend && <Sparkles color={style.color} />}
 
       {/* Soft glow behind the avatar, tier colored */}
       <div
@@ -145,7 +215,7 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction,
           }}
         >
           <span>ARC CONVICTION CARD</span>
-          <span>LAST {postCount} POSTS</span>
+          <span>LAST 30 DAYS</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 22 }}>
@@ -169,6 +239,8 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction,
           >
             {style.label}
           </div>
+          <p style={{ fontSize: 12, color: "#8fa3b8", fontStyle: "italic", margin: "8px 0 0" }}>{style.tagline}</p>
+          <RankDots rank={style.rank} color={style.color} />
         </div>
 
         <div

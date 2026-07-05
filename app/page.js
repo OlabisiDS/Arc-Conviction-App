@@ -5,13 +5,13 @@ import HeroArch from "../components/HeroArch";
 import ConvictionCard from "../components/ConvictionCard";
 import AnalysisReport from "../components/AnalysisReport";
 import TierLadder from "../components/TierLadder";
+import MintFlow from "../components/MintFlow";
 
 export default function Home() {
   const [handle, setHandle] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [mintStatus, setMintStatus] = useState("");
   const cardRef = useRef(null);
 
   async function handleScan(e) {
@@ -51,61 +51,6 @@ export default function Home() {
     link.download = `arc-conviction-${result.profile.handle}.png`;
     link.href = dataUrl;
     link.click();
-  }
-
-  async function handleMint() {
-    setMintStatus("Setting up your wallet...");
-
-    try {
-      const res = await fetch("/api/mint", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle: result.profile.handle })
-      });
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        setMintStatus(data.error || "Couldn't start minting.");
-        return;
-      }
-
-      const { W3SSdk } = await import("@circle-fin/w3s-pw-web-sdk");
-      const sdk = new W3SSdk({ appSettings: { appId: data.appId } });
-      sdk.setAuthentication({ userToken: data.userToken, encryptionKey: data.encryptionKey });
-
-      // Required before execute() will work, establishes a session via
-      // Circle's hosted iframe. Silently breaks execute() if skipped.
-      if (typeof sdk.getDeviceId === "function") {
-        await sdk.getDeviceId();
-      }
-
-      setMintStatus("Confirm the popup to set up your wallet...");
-
-      sdk.execute(data.challengeId, async (error, challengeResult) => {
-        if (error) {
-          setMintStatus(error.message || "Wallet setup was cancelled or failed.");
-          return;
-        }
-
-        setMintStatus("Wallet ready. Minting your badge...");
-
-        const confirmRes = await fetch("/api/mint/confirm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userToken: data.userToken })
-        });
-        const confirmData = await confirmRes.json();
-
-        if (!confirmRes.ok || confirmData.error) {
-          setMintStatus(confirmData.error || "Mint failed.");
-          return;
-        }
-
-        setMintStatus(`Minted to ${confirmData.address.slice(0, 6)}...${confirmData.address.slice(-4)}`);
-      });
-    } catch (err) {
-      setMintStatus("Something went wrong setting up the wallet.");
-    }
   }
 
   return (
@@ -171,15 +116,12 @@ export default function Home() {
             </p>
           )}
 
-          <div style={{ display: "flex", gap: 10, marginTop: 14, width: 360 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14, width: 360 }}>
             <button className="ghost-button" onClick={handleSave}>
               save card
             </button>
-            <button className="ghost-button" onClick={handleMint}>
-              mint on testnet
-            </button>
+            <MintFlow appId={process.env.NEXT_PUBLIC_CIRCLE_APP_ID} />
           </div>
-          {mintStatus && <p className="cooldown-note" style={{ margin: "10px 0 0" }}>{mintStatus}</p>}
 
           <AnalysisReport analysis={result.analysis} />
         </div>
