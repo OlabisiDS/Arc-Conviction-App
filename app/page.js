@@ -127,7 +127,7 @@ export default function Home() {
             <button className="ghost-button" onClick={handleSave}>
               save card
             </button>
-            <MintFlow appId={process.env.NEXT_PUBLIC_CIRCLE_APP_ID} />
+            <MintFlow handle={result.profile.handle} />
           </div>
 
           <AnalysisReport analysis={result.analysis} />
