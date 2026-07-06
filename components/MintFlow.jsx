@@ -8,6 +8,7 @@ export default function MintFlow({ handle }) {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [address, setAddress] = useState("");
+  const [txHash, setTxHash] = useState("");
 
   async function handleMint() {
     setLoading(true);
@@ -30,6 +31,7 @@ export default function MintFlow({ handle }) {
 
       setDone(true);
       setAddress(data.address);
+      setTxHash(data.transaction?.txHash || "");
       setStatus("Minted");
     } catch (err) {
       setIsError(true);
@@ -47,11 +49,15 @@ export default function MintFlow({ handle }) {
       {status && (
         <p className="cooldown-note" style={{ margin: "10px 0 0", color: isError ? "#f0997b" : undefined }}>
           {status}
-          {done && address && (
+          {done && (
             <>
               {" "}
               <a
-                href={`https://testnet.arcscan.app/address/${address}`}
+                href={
+                  txHash
+                    ? `https://testnet.arcscan.app/tx/${txHash}`
+                    : `https://testnet.arcscan.app/address/${address}`
+                }
                 target="_blank"
                 rel="noreferrer"
                 style={{ color: "#e8a355", textDecoration: "underline" }}

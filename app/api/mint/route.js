@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { isConfigured as isWalletConfigured, getOrCreateWalletForHandle } from "../../../lib/circleWallet";
 import { isConfigured as isContractConfigured, mintBadgeTo } from "../../../lib/circleContract";
 
+export const maxDuration = 30; // polling the transaction status can take up to ~20s
+
 export async function POST(request) {
   if (!isWalletConfigured()) {
     return NextResponse.json(
