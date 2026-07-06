@@ -1,0 +1,21 @@
+[33mcommit 9fa97aaaceb9ead901fa05ac59b9b3d77e9f1df3[m
+Author: Rudolph <abdwizzy258@gmail.com>
+Date:   Mon Jul 6 22:08:34 2026 +0100
+
+    Fix mintTo signature: takes address and string, confirmed from Circle's generated code
+
+[1mdiff --git a/lib/circleContract.js b/lib/circleContract.js[m
+[1mindex fb4b190..496900e 100644[m
+[1m--- a/lib/circleContract.js[m
+[1m+++ b/lib/circleContract.js[m
+[36m@@ -43,8 +43,8 @@[m [masync function mintBadgeTo(recipientAddress, tokenId) {[m
+     idempotencyKey: randomUUID(),[m
+     walletId: process.env.CIRCLE_ADMIN_WALLET_ID,[m
+     contractAddress: process.env.CIRCLE_BADGE_CONTRACT_ADDRESS,[m
+[31m-    abiFunctionSignature: "mintTo(address)",[m
+[31m-    abiParameters: [recipientAddress],[m
+[32m+[m[32m    abiFunctionSignature: "mintTo(address,string)",[m
+[32m+[m[32m    abiParameters: [recipientAddress, ""],[m
+     fee: { type: "level", config: { feeLevel: "MEDIUM" } }[m
+   });[m
+ [m
