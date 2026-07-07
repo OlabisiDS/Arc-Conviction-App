@@ -234,7 +234,10 @@ const ConvictionCard = forwardRef(function ConvictionCard({ profile, conviction 
               borderRadius: 999,
               marginTop: 14,
               letterSpacing: "0.02em",
-              border: `1px solid ${style.color}44`
+              border: `1px solid ${style.color}44`,
+              whiteSpace: "nowrap",
+              display: "inline-block",
+              width: "fit-content"
             }}
           >
             {style.label}
